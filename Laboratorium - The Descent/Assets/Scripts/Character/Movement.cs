@@ -41,6 +41,7 @@ public class Movement : MonoBehaviour
     }
 
     // Update is called once per frame
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     void Update()
     {
         xAxis = Input.GetAxis("X Axis");
@@ -82,6 +83,7 @@ public class Movement : MonoBehaviour
     }
 
     // FixedUpdate for ground movement to prevent jittering
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void FixedUpdate()
     {
         // Grounded actions
@@ -101,6 +103,7 @@ public class Movement : MonoBehaviour
     }
 
     // OverlapArea to check if player is on the ground
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private bool IsGrounded()
     {
         Vector2 posA = (Vector2)transform.position + floorCheckA;
@@ -108,21 +111,25 @@ public class Movement : MonoBehaviour
         return (Physics2D.OverlapArea(posA, posB, groundLayers));
     }
 
+
     // Determines whether player is at top or bottom of ladder
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private bool ShouldDemount(float minPos, float maxPos)
     {
         return (transform.position.y <= minPos && yAxis < 0) || (transform.position.y >= maxPos && yAxis > 0);
     }
 
+
     // Gets player's movement inputs
-    //     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private float GetMovementSpeed()
     {
         return (xAxis * walkSpeed) + (xAxis * run * runSpeedBoost);
     }
 
+
     // Player state machine
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void UpdateState()
     {
         if (activeLadder == null && state != PlayerState.interacting)
@@ -157,7 +164,9 @@ public class Movement : MonoBehaviour
         }
     }
 
+
     // Mount ladder - disable gravity, change layer
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     public void MountLadder(Ladder ladderToMount)
     {
         activeLadder = ladderToMount;
@@ -177,6 +186,7 @@ public class Movement : MonoBehaviour
     }
 
     // Demount ladder - enable gravity, change layer
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void DemountLadder(bool extents)
     {
         activeLadder = null;
@@ -190,10 +200,14 @@ public class Movement : MonoBehaviour
             waitingLayerChange = true;
     }
 
+    // Manually update player's state
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     public void UpdateState(PlayerState newState)
     {
         state = newState;
     }
+
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     // ~~~ Area Checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -221,6 +235,8 @@ public class Movement : MonoBehaviour
     private Vector2 headCheckB;
 
 #if UNITY_EDITOR
+    // Gizmos for area checks
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void OnDrawGizmos()
     {
         if (drawGizmos)
