@@ -6,7 +6,8 @@ TagManager:
   tags:
   - Interactable
   - Ladder
-  - Pickup
+  - Door
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - EnemyLadder
   - Trigger
   - Ground
-  - 
+  - Door
   - 
   - 
   - 
