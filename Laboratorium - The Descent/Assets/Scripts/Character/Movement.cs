@@ -27,6 +27,7 @@ public class Movement : MonoBehaviour
     private float interact = 0f;
     private float climb = 0f;
     private bool isGrounded = true;
+    private bool waitingLayerChange = false;
     private float airtime = 0f;
 
     private Ladder activeLadder = null;
@@ -48,30 +49,8 @@ public class Movement : MonoBehaviour
         interact = Input.GetAxis("Interact");
         climb = Input.GetAxis("Climb");
 
-        // Update state
-        UpdateState();
-
-        // Grounded actions
-        if (state == PlayerState.idle || state == PlayerState.moving)
-        {
-            rigBod.drag = 1f;
-
-            // Player movement handled by adding force to rigBod
-            rigBod.AddForce(Vector2.right * GetMovementSpeed() * walkForceMultiplier * Time.deltaTime);
-
-            // Player rotation
-            if (rigBod.velocity.x < 0)
-                this.transform.eulerAngles = Vector2.up * 180;
-            else if (rigBod.velocity.x > 0)
-                this.transform.eulerAngles = Vector2.zero;
-
-            // Airtime
-            airtime = 0f;
-        }
-
-
         // Airborn actions
-        else if (state == PlayerState.airborn)
+        if (state == PlayerState.airborn)
         {
             rigBod.drag = 0f;
 
@@ -79,8 +58,6 @@ public class Movement : MonoBehaviour
             if (rigBod.velocity.y < 0)
                 airtime += Time.deltaTime;
         }
-
-
         // Climbing
         else if (state == PlayerState.climbing)
         {
@@ -93,8 +70,33 @@ public class Movement : MonoBehaviour
             {
                 rigBod.velocity = Vector2.up * yAxis * climbSpeed;
             }
-            else if (ShouldDemount(minPos, maxPos) || climb != 0)
-                DemountLadder();
+            else if (ShouldDemount(minPos, maxPos))
+                DemountLadder(true);
+        }
+        // Grounded (reset airtime)
+        else
+            airtime = 0f;
+
+        // Update state
+        UpdateState();
+    }
+
+    // FixedUpdate for ground movement to prevent jittering
+    private void FixedUpdate()
+    {
+        // Grounded actions
+        if (state == PlayerState.idle || state == PlayerState.moving)
+        {
+            rigBod.drag = 1f;
+
+            // Player movement handled by adding force to rigBod
+            rigBod.AddForce(Vector2.right * GetMovementSpeed() * walkForceMultiplier * Time.fixedDeltaTime);
+
+            // Player rotation
+            if (rigBod.velocity.x < 0)
+                this.transform.eulerAngles = Vector2.up * 180;
+            else if (rigBod.velocity.x > 0)
+                this.transform.eulerAngles = Vector2.zero;
         }
     }
 
@@ -106,30 +108,52 @@ public class Movement : MonoBehaviour
         return (Physics2D.OverlapArea(posA, posB, groundLayers));
     }
 
+    // Determines whether player is at top or bottom of ladder
     private bool ShouldDemount(float minPos, float maxPos)
     {
         return (transform.position.y <= minPos && yAxis < 0) || (transform.position.y >= maxPos && yAxis > 0);
     }
 
+    // Gets player's movement inputs
+    //     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private float GetMovementSpeed()
     {
         return (xAxis * walkSpeed) + (xAxis * run * runSpeedBoost);
     }
 
+    // Player state machine
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void UpdateState()
     {
         if (activeLadder == null && state != PlayerState.interacting)
         {
             if (!IsGrounded())
                 state = PlayerState.airborn;
-            else if (xAxis != 0)
-                state = PlayerState.moving;
             else
-                state = PlayerState.idle;
+            {
+                if (xAxis != 0)
+                    state = PlayerState.moving;
+                else
+                    state = PlayerState.idle;
+
+                if (waitingLayerChange)
+                {
+                    gameObject.layer = LayerMask.NameToLayer("Player");
+                    waitingLayerChange = false;
+                }
+            }
         }
         else if (activeLadder != null)
         {
-            state = PlayerState.climbing;
+            // Jank workaround (I didn't want
+            // to have any inputs be handled
+            // here, but this was the only way
+            // to get manual demounting working)
+
+            if (climb == 0)
+                state = PlayerState.climbing;
+            else
+                DemountLadder(false);
         }
     }
 
@@ -153,14 +177,17 @@ public class Movement : MonoBehaviour
     }
 
     // Demount ladder - enable gravity, change layer
-    private void DemountLadder()
+    private void DemountLadder(bool extents)
     {
         activeLadder = null;
         rigBod.gravityScale = 1f;
         rigBod.velocity = Vector2.zero;
-        state = PlayerState.idle;
+        UpdateState();
 
-        gameObject.layer = LayerMask.NameToLayer("Player");
+        if (extents)
+            gameObject.layer = LayerMask.NameToLayer("Player");
+        else
+            waitingLayerChange = true;
     }
 
     public void UpdateState(PlayerState newState)
