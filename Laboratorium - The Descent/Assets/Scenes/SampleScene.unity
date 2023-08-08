@@ -911,7 +911,7 @@ GameObject:
   - component: {fileID: 952023577}
   - component: {fileID: 952023576}
   m_Layer: 10
-  m_Name: Door
+  m_Name: TestDoor (red)
   m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1327,7 +1327,7 @@ GameObject:
   - component: {fileID: 1376058548}
   - component: {fileID: 1376058547}
   m_Layer: 10
-  m_Name: Key
+  m_Name: TestKey (red)
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1681,6 +1681,7 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 2049
+  airDrag: 0.1
   state: 0
   drawGizmos: 1
   leftCheckA: {x: 0.34, y: 0.96}
@@ -2243,15 +2244,7 @@ PrefabInstance:
       value: TestLadder
       objectReference: {fileID: 0}
     - target: {fileID: 2209335823552341710, guid: 897037f6bcba1a8468a62d5d0854a9ec, type: 3}
-      propertyPath: m_Size.y
-      value: 8.432389
-      objectReference: {fileID: 0}
-    - target: {fileID: 2209335823552341710, guid: 897037f6bcba1a8468a62d5d0854a9ec, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.y
-      value: 8.432389
-      objectReference: {fileID: 0}
-    - target: {fileID: 6088806423971154321, guid: 897037f6bcba1a8468a62d5d0854a9ec, type: 3}
-      propertyPath: m_Size.y
       value: 8.432389
       objectReference: {fileID: 0}
     - target: {fileID: 7702739825616821733, guid: 897037f6bcba1a8468a62d5d0854a9ec, type: 3}

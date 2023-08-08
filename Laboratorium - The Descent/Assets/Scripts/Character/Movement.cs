@@ -20,6 +20,8 @@ public class Movement : MonoBehaviour
     private float walkForceMultiplier;
     [SerializeField]
     private LayerMask groundLayers;
+    [SerializeField]
+    private float airDrag;
 
     private float xAxis = 0f;
     private float yAxis = 0f;
@@ -44,6 +46,7 @@ public class Movement : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     void Update()
     {
+        // Inputs
         xAxis = Input.GetAxis("X Axis");
         yAxis = Input.GetAxis("Y Axis");
         run = Input.GetAxis("Run");
@@ -53,7 +56,7 @@ public class Movement : MonoBehaviour
         // Airborn actions
         if (state == PlayerState.airborn)
         {
-            rigBod.drag = 0f;
+            rigBod.drag = airDrag;
 
             // Increase airtime if player is falling
             if (rigBod.velocity.y < 0)
@@ -67,10 +70,20 @@ public class Movement : MonoBehaviour
             float maxPos = activeLadder.transform.position.y + max;
             Debug.Log(maxPos.ToString() + ", " + minPos.ToString());
 
+            // Keep player within ladder bounds
             if (transform.position.y > minPos && transform.position.y < maxPos)
             {
+                // Lerp player to ladder
+                if (transform.position.x != activeLadder.transform.position.x)
+                {
+                    float xTarget = Mathf.Lerp(transform.position.x, activeLadder.transform.position.x, Time.deltaTime * 10f);
+                    transform.position = new Vector2(xTarget, transform.position.y + (yAxis * climbSpeed * Time.deltaTime));
+                }
+
+                // Move up and down ladder
                 rigBod.velocity = Vector2.up * yAxis * climbSpeed;
             }
+            // Check if player should demount ladder
             else if (ShouldDemount(minPos, maxPos))
                 DemountLadder(true);
         }
@@ -102,13 +115,26 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // OverlapArea to check if player is on the ground
+    // OverlapArea to check if player is on the ground, or if there is an object to the right or left of them
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private bool IsGrounded()
     {
         Vector2 posA = (Vector2)transform.position + floorCheckA;
         Vector2 posB = (Vector2)transform.position + floorCheckB;
-        return (Physics2D.OverlapArea(posA, posB, groundLayers));
+        return Physics2D.OverlapArea(posA, posB, groundLayers);
+    
+    }
+    private bool WallToTheRight()
+    {
+        Vector2 posA = (Vector2)transform.position + rightCheckA;
+        Vector2 posB = (Vector2)transform.position + rightCheckB;
+        return Physics2D.OverlapArea(posA, posB, groundLayers);
+    }
+    private bool WallToTheLeft()
+    {
+        Vector2 posA = (Vector2)transform.position + leftCheckA;
+        Vector2 posB = (Vector2)transform.position + leftCheckB;
+        return Physics2D.OverlapArea(posA, posB, groundLayers);
     }
 
 
@@ -170,7 +196,6 @@ public class Movement : MonoBehaviour
     public void MountLadder(Ladder ladderToMount)
     {
         activeLadder = ladderToMount;
-        transform.position = new Vector2(activeLadder.transform.position.x, transform.position.y);
         transform.rotation = Quaternion.identity;
         rigBod.gravityScale = 0f;
 

@@ -15,6 +15,7 @@ public class Door : MonoBehaviour
 
 
     // Start is called before the first frame update
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     void Start()
     {
         try
@@ -23,6 +24,7 @@ public class Door : MonoBehaviour
         { Debug.LogError("Door script must have Animator component attached to same object!"); }
     }
     
+    // Need I comment? This shit is pretty self-explanatory
     public bool IsLocked()
     { return locked; }
 

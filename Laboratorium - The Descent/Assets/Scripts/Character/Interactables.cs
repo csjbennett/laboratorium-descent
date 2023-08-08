@@ -22,6 +22,7 @@ public class Interactables : MonoBehaviour
     private bool holdingInteract = false;
 
     // Get character scripts
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void Start()
     {
         charMovement = GetComponent<Movement>();
@@ -29,6 +30,7 @@ public class Interactables : MonoBehaviour
     }
 
     // Update is called once per frame
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     void Update()
     {
         var interact = Input.GetAxis("Interact");
@@ -37,6 +39,7 @@ public class Interactables : MonoBehaviour
         if (interact > 0 && !holdingInteract)
         {
             // Pick up item
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
             if (inItem)
             {
                 // Pick up key
@@ -49,10 +52,12 @@ public class Interactables : MonoBehaviour
             }
 
             // Ladder mechanics
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
             else if (inLadder)
                 charMovement.MountLadder(insideLadder);
 
             // Door mechanics
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
             else if (inDoor)
             {
                 // Locked door - needs key
@@ -81,6 +86,7 @@ public class Interactables : MonoBehaviour
     }
 
     // Player enters trigger
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Ladder")
@@ -101,6 +107,7 @@ public class Interactables : MonoBehaviour
     }
 
     // Player exits trigger
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.tag == "Ladder")
