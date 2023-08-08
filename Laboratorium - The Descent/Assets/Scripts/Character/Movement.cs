@@ -11,6 +11,9 @@ public class Movement : MonoBehaviour
     private float runSpeedBoost;
     [SerializeField]
     private float climbSpeed;
+
+    [SerializeField]
+    private float walkAnmSpeedMod = 1f;
     
     [Space(10)]
     [Header("Physics")]
@@ -33,13 +36,15 @@ public class Movement : MonoBehaviour
     private float airtime = 0f;
 
     private Ladder activeLadder = null;
+    private Combat combat;
 
     public enum PlayerState { idle, moving, airborn, climbing, interacting };
     public PlayerState state;
 
     private void Start()
     {
-
+        combat = GetComponent<Combat>();
+        combat.SetArmSpeedMod(walkAnmSpeedMod);
     }
 
     // Update is called once per frame
@@ -150,7 +155,15 @@ public class Movement : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
     private float GetMovementSpeed()
     {
-        return (xAxis * walkSpeed) + (xAxis * run * runSpeedBoost);
+        float weaponMod = 1f;
+        float runMod = (xAxis * run * runSpeedBoost);
+        // Slow player down when weapon is in use
+        if (combat._using)
+        {
+            weaponMod = 0.5f;
+            runMod = 0;
+        }
+        return (xAxis * walkSpeed * weaponMod) + runMod;
     }
 
 

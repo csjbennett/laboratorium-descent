@@ -16,4 +16,8 @@ public class Inventory : MonoBehaviour
     {
         return keys.Contains(key);
     }
+
+    public int smallArmsAmmo = 0;
+    public int shotgunAmmo = 0;
+    public int grenades = 0;
 }
