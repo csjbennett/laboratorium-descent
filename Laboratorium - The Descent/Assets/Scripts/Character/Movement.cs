@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
 
     [SerializeField]
     private float walkAnmSpeedMod = 1f;
+    private float walkSpeedMod = 0f;
     
     [Space(10)]
     [Header("Physics")]
@@ -70,15 +71,15 @@ public class Movement : MonoBehaviour
         // Climbing
         else if (state == PlayerState.climbing)
         {
+            // Get ladder bounds
             float max = activeLadder.GetMaxHeight();
             float minPos = activeLadder.transform.position.y - max;
             float maxPos = activeLadder.transform.position.y + max;
-            Debug.Log(maxPos.ToString() + ", " + minPos.ToString());
 
             // Keep player within ladder bounds
             if (transform.position.y > minPos && transform.position.y < maxPos)
             {
-                // Lerp player to ladder
+                // Lerp player to ladder (on x-axis)
                 if (transform.position.x != activeLadder.transform.position.x)
                 {
                     float xTarget = Mathf.Lerp(transform.position.x, activeLadder.transform.position.x, Time.deltaTime * 10f);
@@ -117,6 +118,10 @@ public class Movement : MonoBehaviour
                 this.transform.eulerAngles = Vector2.up * 180;
             else if (rigBod.velocity.x > 0)
                 this.transform.eulerAngles = Vector2.zero;
+
+            // Animation
+
+            combat.SetArmSpeedMod(walkAnmSpeedMod * walkSpeedMod);
         }
     }
 

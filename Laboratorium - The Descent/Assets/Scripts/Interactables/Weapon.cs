@@ -25,6 +25,10 @@ public class Weapon : MonoBehaviour
     [SerializeField][DrawIf("weaponType", WeaponType.ranged)]
     private GameObject bullet;                                  // Bullet prefab
     [SerializeField][DrawIf("weaponType", WeaponType.ranged)]
+    private int bulletsPerShot;                                 // Bullets fired per click
+    [SerializeField][DrawIf("weaponType", WeaponType.ranged)]
+    private float spread;
+    [SerializeField][DrawIf("weaponType", WeaponType.ranged)]
     private int magSize;                                        // How many bullets the gun holds
 
     // Throwable-specific attributes
@@ -52,7 +56,23 @@ public class Weapon : MonoBehaviour
     // Attack
     public void Attack()
     {
+        if (weaponType == WeaponType.melee)
+        {
 
+        }
+        else if (weaponType == WeaponType.ranged)
+        {
+
+
+            for (int i = 0; i < bulletsPerShot; i++)
+            {
+
+            }
+        }
+        else if (weaponType == WeaponType.throwable)
+        {
+
+        }
     }
 
     public void ToggleRigBod(bool enabled)

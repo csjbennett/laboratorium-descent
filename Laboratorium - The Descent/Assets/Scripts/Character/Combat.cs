@@ -40,6 +40,7 @@ public class Combat : MonoBehaviour
         Vector3 offsets = weapon.GetOffsets();
         weapon.transform.localPosition = new Vector2(offsets.x, offsets.y);
         weapon.transform.localEulerAngles = new Vector3(0, 0, offsets.z);
+        armAnm.SetBool("Armed", true);
     }
 
     public void DropWeapon()
@@ -48,6 +49,7 @@ public class Combat : MonoBehaviour
         weapon.ToggleRigBod(true);
         weapon.transform.parent = null;
         weapon = null;
+        armAnm.SetBool("Armed", false);
     }
 
     public void DisableCombat()
